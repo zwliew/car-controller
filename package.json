@@ -1,0 +1,26 @@
+{
+  "name": "geekout-controller",
+  "version": "1.0.0",
+  "description": "Web controller interface for controlling the smart car for the GovTech Geekout bootcamp.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zwliew/car-controller.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/zwliew/car-controller/issues"
+  },
+  "homepage": "https://github.com/zwliew/car-controller#readme",
+  "dependencies": {
+    "finalhandler": "^1.1.1",
+    "nodemon": "^1.17.5",
+    "serve-static": "^1.13.2",
+    "ws": "^5.2.0"
+  }
+}

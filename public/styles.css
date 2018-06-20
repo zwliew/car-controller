@@ -13,19 +13,13 @@
 }
 
 #main {
-  width: 400px;
+  width: 480px;
   margin: auto;
 }
 
 #controls {
   display: flex;
   justify-content: space-between;
-}
-
-#camera-view {
-  width: 400px;
-  height: 400px;
-  background: black;
 }
 
 #direction-controls {

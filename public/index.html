@@ -9,10 +9,9 @@
   </head>
   <body>
     <div id="main">
-      <div id="camera-view"></div>
       <section id="controls">
         <section id="speed-controls">
-          <input type="range" min="-255" max="255" list="tickmarks">
+          <input type="range" min="-255" max="255" list="tickmarks" id="speed-slider">
           <datalist id="tickmarks">
               <option value="-255" label="-255">
               <option value="-200">
@@ -28,8 +27,8 @@
             </datalist>
         </section>
         <section>
-          <p id="speed-text" class="status-text">Speed: </p>
-          <p id="direction-text" class="status-text">Direction: </p>
+          <p id="speed-text" class="status-text">Speed: 0</p>
+          <p id="direction-text" class="status-text">Direction: front</p>
         </section>
         <section id="direction-controls">
           <button class="button" id="left-btn">&lt;</button>
