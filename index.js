@@ -19,12 +19,17 @@ const wss = new WebSocket.Server({ server });
 wss.on('connection', (ws) => {
   console.log('Web controller connected.');
   ws.on('message', (message) => {
-    const { type, value } = JSON.parse(message);
+    let { type, value } = JSON.parse(message);
     switch (type) {
       case 'speed':
         if (value > 255 || value < -255) {
           console.log(`Invalid speed received: ${value}`);
           return;
+        }
+        if (value < 0) {
+          console.log(`New direction: back`);
+          client.write(`d_b`);
+          value = -value;
         }
         console.log(`New speed: ${value}`);
         client.write(`s_${value}`);
