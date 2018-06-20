@@ -1,0 +1,43 @@
+.button {
+  border-radius: 100%;
+  background: #eee;
+  height: 48px;
+  width: 48px;
+  margin: 5px;
+  box-shadow: 0.5px 0.5px 0.5px black;
+  outline: none;
+}
+
+.button:hover {
+  cursor: pointer;
+}
+
+#main {
+  width: 400px;
+  margin: auto;
+}
+
+#controls {
+  display: flex;
+  justify-content: space-between;
+}
+
+#camera-view {
+  width: 400px;
+  height: 400px;
+  background: black;
+}
+
+#direction-controls {
+  display: flex;
+  align-items: center;
+}
+
+.status-text {
+  font-family: Roboto, sans-serif;
+}
+
+#speed-controls {
+  display: flex;
+  align-items: center;
+}
