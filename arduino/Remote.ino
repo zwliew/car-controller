@@ -26,18 +26,18 @@ void loop() {
   if (cur_char != ';') return;
 
   if (received_cmd.charAt(0) == 's') {
-    const int speed = received_cmd.substring(2).toInt();
+    const int speed = received_cmd.substring(2, received_cmd.length() - 1).toInt();
     motorLF.setSpeed(speed);
     motorLB.setSpeed(speed);
     motorRF.setSpeed(speed);
     motorRB.setSpeed(speed);
-  } else if (received_cmd == "d_f") {
+  } else if (received_cmd == "d_f;") {
     moveForward();
-  } else if (received_cmd == "d_b") {
+  } else if (received_cmd == "d_b;") {
     moveBackward();
-  } else if (received_cmd == "d_l") {
+  } else if (received_cmd == "d_l;") {
     moveLeft();
-  } else if (received_cmd == "d_r") {
+  } else if (received_cmd == "d_r;") {
     moveRight();
   }
 
