@@ -27,12 +27,12 @@ wss.on('connection', (ws) => {
           return;
         }
         if (value < 0) {
-          console.log(`New direction: back`);
-          client.write(`d_b`);
+          console.log('New direction: back');
+          client.write('d_b;');
           value = -value;
         }
         console.log(`New speed: ${value}`);
-        client.write(`s_${value}`);
+        client.write(`s_${value};`);
         break;
       case 'direction':
         if (value !== 'left' && value !== 'right' && value !== 'front') {
@@ -40,7 +40,7 @@ wss.on('connection', (ws) => {
           return;
         }
         console.log(`New direction: ${value}`);
-        client.write(`d_${value[0]}`);
+        client.write(`d_${value[0]};`);
         break;
     }
   });
