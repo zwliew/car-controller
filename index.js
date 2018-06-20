@@ -22,7 +22,7 @@ wss.on('connection', (ws) => {
     const { type, value } = JSON.parse(message);
     switch (type) {
       case 'speed':
-        if (value > 255 || value < 0) {
+        if (value > 255 || value < -255) {
           console.log(`Invalid speed received: ${value}`);
           return;
         }
