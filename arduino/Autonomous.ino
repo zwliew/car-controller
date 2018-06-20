@@ -62,11 +62,8 @@ void loop() {
   delay(LOOP_DELAY_MS); //dont know if neededs
 }
 
-
-
-
 // Set all speeds of wheels to maximum
-void setAllSpeedsMAX(){
+void setAllSpeedsMAX() {
   motorLF.setSpeed(MAX_SPEED);
   motorLB.setSpeed(MAX_SPEED);
   motorRF.setSpeed(MAX_SPEED);
@@ -74,7 +71,7 @@ void setAllSpeedsMAX(){
 }
 
 // Define moving forward
-void moveForward(){ //move the car at max speed forward
+void moveForward() { //move the car at max speed forward
   setAllSpeedsMAX();
   motorLF.run(FORWARD);
   motorLB.run(FORWARD);
@@ -84,7 +81,7 @@ void moveForward(){ //move the car at max speed forward
 }
 
 // Defines Turn Left
-void moveLeft(){ //make sure to include the reverse command for adjacent wheel
+void moveLeft() { //make sure to include the reverse command for adjacent wheel
   setAllSpeedsMAX();
   motorLF.run(BACKWARD);
   motorLB.run(BACKWARD); //change this to nil
@@ -94,7 +91,7 @@ void moveLeft(){ //make sure to include the reverse command for adjacent wheel
 }
 
 // Defines Turn Right
-void moveRight(){ //make sure to include the reverse command for adjacent wheel
+void moveRight() { //make sure to include the reverse command for adjacent wheel
   setAllSpeedsMAX();
   motorLF.run(FORWARD);
   motorLB.run(FORWARD);
@@ -103,7 +100,7 @@ void moveRight(){ //make sure to include the reverse command for adjacent wheel
   prev_dir = RIGHT; // set the prev direction to moving right
 }
 
-void prev_state(){ //if no line sensed, move where?
+void prev_state() { //if no line sensed, move where?
   if (prev_dir == FRONT){ //if last detected on line, move forward
     moveForward();
   } else if (prev_dir == LEFT){ //if last detected left on line, left
@@ -113,10 +110,10 @@ void prev_state(){ //if no line sensed, move where?
   }
 }
 
-bool onLine(int reading){
+bool onLine(int reading) {
   return reading <= ON_LINE + RANGE && reading >= ON_LINE - RANGE;
 }
 
-bool offLine(int reading){
+bool offLine(int reading) {
   return reading <= OFF_LINE + RANGE && reading >= OFF_LINE - RANGE;
 }

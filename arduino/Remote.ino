@@ -60,7 +60,7 @@ void moveBackward() {
 }
 
 // Defines Turn Left
-void moveLeft(){ //make sure to include the reverse command for adjacent wheel
+void moveLeft() { //make sure to include the reverse command for adjacent wheel
   motorLF.run(BACKWARD);
   motorLB.run(BACKWARD); //change this to nil
   motorRF.run(FORWARD);
@@ -68,17 +68,17 @@ void moveLeft(){ //make sure to include the reverse command for adjacent wheel
 }
 
 // Defines Turn Right
-void moveRight(){ //make sure to include the reverse command for adjacent wheel
+void moveRight() { //make sure to include the reverse command for adjacent wheel
   motorLF.run(FORWARD);
   motorLB.run(FORWARD);
   motorRF.run(BACKWARD);
   motorRB.run(BACKWARD); //change this to nil
 }
 
-bool onLine(int reading){
+bool onLine(int reading) {
   return reading <= ON_LINE + RANGE && reading >= ON_LINE - RANGE;
 }
 
-bool offLine(int reading){
+bool offLine(int reading) {
   return reading <= OFF_LINE + RANGE && reading >= OFF_LINE - RANGE;
 }
