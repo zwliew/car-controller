@@ -16,6 +16,11 @@ UC_DCMotor motorLB(2, MOTOR34_64KHZ); //Back Left
 
 void setup() {
   Serial.begin(BAUD_RATE);
+  moveForward();
+  motorLF.setSpeed(0);
+  motorLB.setSpeed(0);
+  motorRF.setSpeed(0);
+  motorRB.setSpeed(0);
 }
 
 void loop() {
