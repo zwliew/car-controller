@@ -42,9 +42,16 @@ void setup() {
   //UltraSound Sensor
   pinMode(US_PING, OUTPUT);
   pinMode(US_ECHO, INPUT);
+
+  setAllSpeedsMAX();
 }
 
 void loop() {
+  if (nearObstacle()) {
+    stop();
+    return;
+  }
+
   // put your main code here, to run repeatedly:
   const int left = analogRead(IR_L);
   const int centre = analogRead(IR_C);
@@ -62,6 +69,14 @@ void loop() {
   delay(LOOP_DELAY_MS); //dont know if neededs
 }
 
+bool nearObstacle() {
+  digitalWrite(US_PING, HIGH);
+  delayMicroseconds(5);
+  digitalWrite(US_PING, LOW);
+  const int duration = pulseIn(US_PING, HIGH);
+  return duration * 0.01715 < 10;
+}
+
 // Set all speeds of wheels to maximum
 void setAllSpeedsMAX() {
   motorLF.setSpeed(MAX_SPEED);
@@ -72,7 +87,6 @@ void setAllSpeedsMAX() {
 
 // Define moving forward
 void moveForward() { //move the car at max speed forward
-  setAllSpeedsMAX();
   motorLF.run(FORWARD);
   motorLB.run(FORWARD);
   motorRF.run(FORWARD);
@@ -82,7 +96,6 @@ void moveForward() { //move the car at max speed forward
 
 // Defines Turn Left
 void moveLeft() { //make sure to include the reverse command for adjacent wheel
-  setAllSpeedsMAX();
   motorLF.run(BACKWARD);
   motorLB.run(BACKWARD); //change this to nil
   motorRF.run(FORWARD);
@@ -92,12 +105,18 @@ void moveLeft() { //make sure to include the reverse command for adjacent wheel
 
 // Defines Turn Right
 void moveRight() { //make sure to include the reverse command for adjacent wheel
-  setAllSpeedsMAX();
   motorLF.run(FORWARD);
   motorLB.run(FORWARD);
   motorRF.run(BACKWARD);
   motorRB.run(BACKWARD); //change this to nil
   prev_dir = RIGHT; // set the prev direction to moving right
+}
+
+void stop() {
+  motorLF.run(STOP);
+  motorLB.run(STOP);
+  motorRF.run(STOP);
+  motorRB.run(STOP);
 }
 
 void prev_state() { //if no line sensed, move where?
