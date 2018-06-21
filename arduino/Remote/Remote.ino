@@ -16,7 +16,7 @@ UC_DCMotor motorLB(2, MOTOR34_64KHZ); //Back Left
 
 void setup() {
   Serial.begin(BAUD_RATE);
-  moveForward();
+  stop();
   motorLF.setSpeed(0);
   motorLB.setSpeed(0);
   motorRF.setSpeed(0);
@@ -80,10 +80,9 @@ void moveRight() { //make sure to include the reverse command for adjacent wheel
   motorRB.run(BACKWARD); //change this to nil
 }
 
-bool onLine(int reading) {
-  return reading <= ON_LINE + RANGE && reading >= ON_LINE - RANGE;
-}
-
-bool offLine(int reading) {
-  return reading <= OFF_LINE + RANGE && reading >= OFF_LINE - RANGE;
+void stop() {
+  motorLF.run(STOP);
+  motorLB.run(STOP);
+  motorRF.run(STOP);
+  motorRB.run(STOP);
 }
