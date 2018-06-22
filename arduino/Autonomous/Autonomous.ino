@@ -1,6 +1,7 @@
 #define BAUD_RATE 9600
 #define MAX_SPEED 255
 #define LOOP_DELAY_MS 3
+#define TURN_DELAY_MS 225
 
 //For IR sensor
 #define IR_L A0
@@ -30,6 +31,7 @@ UC_DCMotor motorRB(1, MOTOR34_64KHZ); //Back Right
 UC_DCMotor motorLB(2, MOTOR34_64KHZ); //Back Left
 
 int prev_dir = FRONT;
+unsigned int num_us_detected = 0;
 
 void setup() {
   // put your setup code here, to run once:
@@ -43,46 +45,228 @@ void setup() {
   pinMode(US_PING, OUTPUT);
   pinMode(US_ECHO, INPUT);
 
-  setAllSpeedsMAX();
+  stop();
+  setSpeed(MAX_SPEED);
 }
 
 void loop() {
-  if (nearObstacle()) {
-    stop();
-    return;
-  }
+  moveForward();
+  return;
+  int left = 0;
+  int ctr = 0;
+  bool leftOnLine = false;
+  bool ctrOnLine = false;
 
-  // put your main code here, to run repeatedly:
-  const int left = analogRead(IR_L);
-  const int centre = analogRead(IR_C);
+  switch (num_us_detected) {
+    case 0:
+      if (nearObstacle(false)) {
+        num_us_detected = 1;
+      }
 
-  // Navigation on line
-  if (onLine(left) && onLine(centre)) { //It is on the line
-    moveForward(); //set the car to move forward
-  } else if (onLine(left) && offLine(centre)) { //It is right of line
-    moveLeft(); // set the car to move left
-  } else if (offLine(left) && onLine(centre)) { //It is left of line
-    moveRight(); // set the car to move right
-  } else {
-    prev_state();
+      left = analogRead(IR_L);
+      ctr = analogRead(IR_C);
+      leftOnLine = onLine(left);
+      ctrOnLine = onLine(ctr);
+
+      if (leftOnLine && ctrOnLine) {
+        moveForward();
+      } else if (leftOnLine) {
+        turnLeft();
+      } else if (ctrOnLine) {
+        turnRight();
+      } else {
+        turnLeft();
+        delay(TURN_DELAY_MS);
+        left = analogRead(IR_L);
+        ctr = analogRead(IR_C);
+        if (onLine(left) || onLine(ctr)) {
+          moveForward();
+        } else {
+          turnRight();
+          delay(TURN_DELAY_MS * 2);
+          left = analogRead(IR_L);
+          ctr = analogRead(IR_C);
+          if (onLine(left) || onLine(ctr)) {
+            moveForward();
+          }
+        }
+      }
+      delay(LOOP_DELAY_MS);
+      break;
+    case 1:
+      static int case_1_turns = 0;
+
+      if (case_1_turns == 2) {
+        if (nearObstacle(true)) {
+          num_us_detected = 2;
+        }
+
+        left = analogRead(IR_L);
+        ctr = analogRead(IR_C);
+        leftOnLine = onLine(left);
+        ctrOnLine = onLine(ctr);
+
+        if (leftOnLine && ctrOnLine) {
+          moveForward();
+        } else if (leftOnLine) {
+          turnLeft();
+        } else if (ctrOnLine) {
+          turnRight();
+        } else {
+          prev_state();
+        }
+        delay(LOOP_DELAY_MS);
+        break;
+      }
+
+      left = analogRead(IR_L);
+      ctr = analogRead(IR_C);
+      leftOnLine = onLine(left);
+      ctrOnLine = onLine(ctr);
+
+      if (leftOnLine && ctrOnLine) {
+        moveForward();
+      } else if (leftOnLine) {
+        turnLeft();
+      } else if (ctrOnLine) {
+        turnRight();
+      } else {
+        turnLeft();
+        delay(TURN_DELAY_MS);
+        left = analogRead(IR_L);
+        ctr = analogRead(IR_C);
+        if (onLine(left) || onLine(ctr)) {
+          moveForward();
+          case_1_turns++;
+        } else {
+          turnRight();
+          delay(TURN_DELAY_MS * 2);
+          left = analogRead(IR_L);
+          ctr = analogRead(IR_C);
+          if (onLine(left) || onLine(ctr)) {
+            moveForward();
+            case_1_turns++;
+          }
+        }
+      }
+      delay(LOOP_DELAY_MS);
+      break;
+    case 2:
+      static int case_2_turns = 0;
+
+      if (nearObstacle(false) && case_2_turns == 1) {
+        num_us_detected = 3;
+        turnLeft();
+        delay(TURN_DELAY_MS);
+        moveForward();
+        delay(750);
+        turnRight();
+        delay(TURN_DELAY_MS);
+        moveForward();
+        break;
+      }
+
+      left = analogRead(IR_L);
+      ctr = analogRead(IR_C);
+      leftOnLine = onLine(left);
+      ctrOnLine = onLine(ctr);
+
+      if (leftOnLine && ctrOnLine) {
+        moveForward();
+      } else if (leftOnLine) {
+        turnLeft();
+      } else if (ctrOnLine) {
+        turnRight();
+      } else {
+        turnLeft();
+        delay(TURN_DELAY_MS);
+        left = analogRead(IR_L);
+        ctr = analogRead(IR_C);
+        if (onLine(left) || onLine(ctr)) {
+          moveForward();
+          case_2_turns++;
+        }
+      }
+      break;
+    case 3:
+      static int case_3_turns = 0;
+      left = analogRead(IR_L);
+      ctr = analogRead(IR_C);
+      leftOnLine = onLine(left);
+      ctrOnLine = onLine(ctr);
+
+      if (leftOnLine && ctrOnLine) {
+        moveForward();
+      } else if (leftOnLine) {
+        turnLeft();
+      } else if (ctrOnLine) {
+        turnRight();
+      } else {
+        if (case_3_turns == 0) {
+          turnRight();
+          delay(TURN_DELAY_MS);
+          left = analogRead(IR_L);
+          ctr = analogRead(IR_C);
+          if (onLine(left) || onLine(ctr)) {
+            moveForward();
+          }
+          case_3_turns = 1;
+        } else if (case_3_turns == 1) {
+          turnLeft();
+          delay(TURN_DELAY_MS);
+          left = analogRead(IR_L);
+          ctr = analogRead(IR_C);
+          if (onLine(left) || onLine(ctr)) {
+            moveForward();
+          }
+          case_3_turns = 2;
+        } else if (case_3_turns == 2) {
+          moveForward();
+          if (nearObstacle(false)) {
+            num_us_detected = 4;
+            turnLeft();
+            delay(TURN_DELAY_MS);
+            moveForward();
+            prev_dir = FRONT;
+          }
+        }
+      }
+      break;
+    case 4:
+      left = analogRead(IR_L);
+      ctr = analogRead(IR_C);
+      leftOnLine = onLine(left);
+      ctrOnLine = onLine(ctr);
+
+      if (leftOnLine && ctrOnLine) {
+        moveForward();
+      } else if (leftOnLine) {
+        turnLeft();
+      } else if (ctrOnLine) {
+        turnRight();
+      } else {
+        prev_state();
+      }
+      delay(LOOP_DELAY_MS);
+      break;
+    default:
+      break;
   }
-  delay(LOOP_DELAY_MS); //dont know if neededs
 }
 
-bool nearObstacle() {
+bool nearObstacle(bool longer) {
   digitalWrite(US_PING, HIGH);
   delayMicroseconds(5);
   digitalWrite(US_PING, LOW);
   const int duration = pulseIn(US_PING, HIGH);
-  return duration * 0.01715 < 10;
+  return duration * 0.01715 < (longer ? 30 : 20);
 }
 
-// Set all speeds of wheels to maximum
-void setAllSpeedsMAX() {
-  motorLF.setSpeed(MAX_SPEED);
-  motorLB.setSpeed(MAX_SPEED);
-  motorRF.setSpeed(MAX_SPEED);
-  motorRB.setSpeed(MAX_SPEED);
+void setSpeed(const int speed) {
+  motorLF.setSpeed(speed);
+  motorLB.setSpeed(speed);
+  motorRF.setSpeed(speed);
+  motorRB.setSpeed(speed);
 }
 
 // Define moving forward
@@ -95,7 +279,7 @@ void moveForward() { //move the car at max speed forward
 }
 
 // Defines Turn Left
-void moveLeft() { //make sure to include the reverse command for adjacent wheel
+void turnLeft() { //make sure to include the reverse command for adjacent wheel
   motorLF.run(BACKWARD);
   motorLB.run(BACKWARD); //change this to nil
   motorRF.run(FORWARD);
@@ -104,7 +288,7 @@ void moveLeft() { //make sure to include the reverse command for adjacent wheel
 }
 
 // Defines Turn Right
-void moveRight() { //make sure to include the reverse command for adjacent wheel
+void turnRight() { //make sure to include the reverse command for adjacent wheel
   motorLF.run(FORWARD);
   motorLB.run(FORWARD);
   motorRF.run(BACKWARD);
@@ -123,16 +307,12 @@ void prev_state() { //if no line sensed, move where?
   if (prev_dir == FRONT){ //if last detected on line, move forward
     moveForward();
   } else if (prev_dir == LEFT){ //if last detected left on line, left
-    moveLeft();
+    turnLeft();
   } else if (prev_dir == RIGHT){ //if last detcted right of line, right
-    moveRight();
+    turnRight();
   }
 }
 
 bool onLine(int reading) {
   return reading <= ON_LINE + RANGE && reading >= ON_LINE - RANGE;
-}
-
-bool offLine(int reading) {
-  return reading <= OFF_LINE + RANGE && reading >= OFF_LINE - RANGE;
 }
